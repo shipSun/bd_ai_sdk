@@ -1,0 +1,17 @@
+{
+    "name": "ship-sun/bd_ai_sdk",
+    "type": "library",
+    "license": "MTI",
+    "authors": [
+        {
+            "name": "shipSun",
+            "email": "543999860@qq.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload":{
+        "psr-4": {
+            "BaiDuAi\\": "src/"
+        }
+    }
+}
