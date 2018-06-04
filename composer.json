@@ -1,17 +1,23 @@
 {
     "name": "ship-sun/bd_ai_sdk",
     "type": "library",
-    "license": "MTI",
+    "license": "MIT",
     "authors": [
         {
             "name": "shipSun",
             "email": "543999860@qq.com"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "autoload":{
         "psr-4": {
             "BaiDuAi\\": "src/"
         }
+    },
+    "require": {
+        "php": ">=7.0.10"
+    },
+    "require-dev":{
+        "phpunit/phpunit": "^6.5"
     }
 }
