@@ -88,7 +88,7 @@ class AipImageClassify extends AipBase {
     public function advancedGeneral($image, $options=array()){
 
         $data = array();
-        
+
         $data['image'] = base64_encode($image);
 
         $data = array_merge($data, $options);
