@@ -59,12 +59,13 @@ class AipBase {
      */
     protected $scope = 'brain_all_scope';
 
+    protected $cache;
     /**
      * @param string $appId 
      * @param string $apiKey
      * @param string $secretKey
      */
-    public function __construct($appId, $apiKey, $secretKey){
+    public function __construct($appId, $apiKey, $secretKey, $cache=null){
         $this->appId = trim($appId);
         $this->apiKey = trim($apiKey);
         $this->secretKey = trim($secretKey);
@@ -72,6 +73,7 @@ class AipBase {
         $this->client = new AipHttpClient();
         $this->version = '2_2_2';
         $this->proxies = array();
+        $this->cache = $cache;
     }
 
     /**
@@ -246,7 +248,7 @@ class AipBase {
      * @return string
      */
     private function getAuthFilePath(){
-        return dirname(__FILE__) . DIRECTORY_SEPARATOR . md5($this->apiKey);
+        return md5($this->apiKey);
     }
 
     /**
@@ -261,7 +263,9 @@ class AipBase {
 
         $obj['time'] = time();
         $obj['is_cloud_user'] = $this->isCloudUser;
-        @file_put_contents($this->getAuthFilePath(), json_encode($obj));
+        if(is_object($this->cache)){
+            $this->cache->write($this->getAuthFilePath(), json_encode($obj));
+        }
     }
 
     /**
@@ -269,16 +273,17 @@ class AipBase {
      * @return array
      */
     private function readAuthObj(){
-        $content = @file_get_contents($this->getAuthFilePath());
-        if($content !== false){
-            $obj = json_decode($content, true);
-            $this->isCloudUser = $obj['is_cloud_user'];
-            $obj['is_read'] = true;
-            if($this->isCloudUser || $obj['time'] + $obj['expires_in'] - 30 > time()){
-                return $obj;
+        if(is_object($this->cache)){
+            $content = $this->cache->read($this->getAuthFilePath());
+            if($content !== false){
+                $obj = json_decode($content, true);
+                $this->isCloudUser = $obj['is_cloud_user'];
+                $obj['is_read'] = true;
+                if($this->isCloudUser || $obj['time'] + $obj['expires_in'] - 30 > time()){
+                    return $obj;
+                }
             }
         }
-
         return null;
     }
 
